@@ -645,3 +645,176 @@ function viewLeads() {
 console.log('%cSTUDIO X Lead Management', 'color: #6366f1; font-size: 16px; font-weight: bold;');
 console.log('%cviewLeads() - 저장된 리드 확인', 'color: #a0a0b0;');
 console.log('%cexportLeads() - CSV로 내보내기', 'color: #a0a0b0;');
+
+// ===== News RSS Feed =====
+const NEWS_CONFIG = {
+    feedUrl: 'http://www.yonhapnewstv.co.kr/browse/feed/',
+    corsProxy: 'https://api.allorigins.win/raw?url=',
+    refreshInterval: 60 * 60 * 1000, // 1시간 (밀리초)
+    maxArticles: 6,
+    designKeywords: ['디자인', '브랜드', 'UI', 'UX', '웹', '앱', '로고', '그래픽', 'IT', '테크', '스타트업', '기업', '마케팅', '광고', '미디어', '트렌드', '혁신', '창업', 'AI', '인공지능', '디지털']
+};
+
+let newsRefreshTimer = null;
+
+// 페이지 로드 시 뉴스 가져오기
+document.addEventListener('DOMContentLoaded', function() {
+    fetchNews();
+    // 1시간마다 자동 갱신
+    newsRefreshTimer = setInterval(fetchNews, NEWS_CONFIG.refreshInterval);
+});
+
+async function fetchNews() {
+    const newsGrid = document.getElementById('newsGrid');
+    const updateInfo = document.getElementById('newsUpdateInfo');
+
+    if (!newsGrid) return;
+
+    // 로딩 표시
+    newsGrid.innerHTML = `
+        <div class="news-loading">
+            <div class="loading-spinner"></div>
+            <p>최신 뉴스를 불러오는 중...</p>
+        </div>
+    `;
+
+    try {
+        const proxyUrl = NEWS_CONFIG.corsProxy + encodeURIComponent(NEWS_CONFIG.feedUrl);
+        const response = await fetch(proxyUrl);
+
+        if (!response.ok) {
+            throw new Error('피드를 가져올 수 없습니다.');
+        }
+
+        const xmlText = await response.text();
+        const parser = new DOMParser();
+        const xmlDoc = parser.parseFromString(xmlText, 'text/xml');
+
+        // RSS 아이템 파싱
+        const items = xmlDoc.querySelectorAll('item');
+        const articles = [];
+
+        items.forEach(item => {
+            const title = item.querySelector('title')?.textContent || '';
+            const link = item.querySelector('link')?.textContent || '';
+            const description = item.querySelector('description')?.textContent || '';
+            const pubDate = item.querySelector('pubDate')?.textContent || '';
+
+            // 썸네일 이미지 찾기 (여러 방법 시도)
+            let thumbnail = '';
+            const enclosure = item.querySelector('enclosure');
+            if (enclosure && enclosure.getAttribute('type')?.startsWith('image')) {
+                thumbnail = enclosure.getAttribute('url');
+            }
+            // media:thumbnail 또는 media:content 확인
+            const mediaThumb = item.getElementsByTagName('media:thumbnail')[0];
+            if (mediaThumb) {
+                thumbnail = mediaThumb.getAttribute('url');
+            }
+            const mediaContent = item.getElementsByTagName('media:content')[0];
+            if (!thumbnail && mediaContent && mediaContent.getAttribute('type')?.startsWith('image')) {
+                thumbnail = mediaContent.getAttribute('url');
+            }
+            // description에서 img 태그 추출 시도
+            if (!thumbnail) {
+                const imgMatch = description.match(/<img[^>]+src=["']([^"']+)["']/i);
+                if (imgMatch) {
+                    thumbnail = imgMatch[1];
+                }
+            }
+
+            articles.push({
+                title: stripHtml(title),
+                link,
+                description: stripHtml(description),
+                pubDate: formatDate(pubDate),
+                thumbnail
+            });
+        });
+
+        // 디자인 관련 기사 필터링 (키워드 포함)
+        let designArticles = articles.filter(article => {
+            const text = (article.title + ' ' + article.description).toLowerCase();
+            return NEWS_CONFIG.designKeywords.some(keyword =>
+                text.includes(keyword.toLowerCase())
+            );
+        });
+
+        // 디자인 관련 기사가 부족하면 일반 기사로 채우기
+        if (designArticles.length < NEWS_CONFIG.maxArticles) {
+            const remainingCount = NEWS_CONFIG.maxArticles - designArticles.length;
+            const otherArticles = articles.filter(a => !designArticles.includes(a));
+            designArticles = [...designArticles, ...otherArticles.slice(0, remainingCount)];
+        }
+
+        // 최대 개수만큼 자르기
+        const displayArticles = designArticles.slice(0, NEWS_CONFIG.maxArticles);
+
+        if (displayArticles.length === 0) {
+            throw new Error('표시할 뉴스가 없습니다.');
+        }
+
+        // 뉴스 카드 렌더링
+        renderNewsCards(displayArticles);
+
+        // 업데이트 시간 표시
+        if (updateInfo) {
+            updateInfo.textContent = `마지막 업데이트: ${new Date().toLocaleString('ko-KR')} (1시간마다 자동 갱신)`;
+        }
+
+    } catch (error) {
+        console.error('뉴스 가져오기 오류:', error);
+        newsGrid.innerHTML = `
+            <div class="news-error">
+                <p>뉴스를 불러오는 중 오류가 발생했습니다.</p>
+                <button onclick="fetchNews()">다시 시도</button>
+            </div>
+        `;
+    }
+}
+
+function renderNewsCards(articles) {
+    const newsGrid = document.getElementById('newsGrid');
+    if (!newsGrid) return;
+
+    newsGrid.innerHTML = articles.map(article => `
+        <a href="${article.link}" target="_blank" rel="noopener noreferrer" class="news-card">
+            ${article.thumbnail
+                ? `<img src="${article.thumbnail}" alt="${article.title}" class="news-thumbnail" onerror="this.outerHTML='<div class=\\'news-thumbnail-placeholder\\'>📰</div>'">`
+                : '<div class="news-thumbnail-placeholder">📰</div>'
+            }
+            <div class="news-content">
+                <span class="news-category">NEWS</span>
+                <h3 class="news-title">${article.title}</h3>
+                <p class="news-description">${article.description}</p>
+                <span class="news-date">${article.pubDate}</span>
+            </div>
+        </a>
+    `).join('');
+}
+
+function stripHtml(html) {
+    const tmp = document.createElement('div');
+    tmp.innerHTML = html;
+    return tmp.textContent || tmp.innerText || '';
+}
+
+function formatDate(dateString) {
+    if (!dateString) return '';
+    try {
+        const date = new Date(dateString);
+        return date.toLocaleDateString('ko-KR', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+        });
+    } catch {
+        return dateString;
+    }
+}
+
+// 수동 새로고침 함수 (콘솔에서 사용 가능)
+function refreshNews() {
+    console.log('뉴스 새로고침 중...');
+    fetchNews();
+}
