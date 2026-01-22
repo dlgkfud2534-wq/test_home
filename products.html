@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>상품 | STUDIO X</title>
+    <meta name="description" content="STUDIO X 디자인 패키지 - 브랜드 아이덴티티, 웹사이트 디자인, 앱 UI/UX">
+    <meta name="theme-color" content="#0a0a0f">
+    <link rel="icon" href="favicon.ico">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/common.css">
+    <style>
+        /* Products Page Specific Styles */
+        .products-hero {
+            padding: 160px 0 80px;
+            text-align: center;
+            background: linear-gradient(180deg, var(--bg-secondary) 0%, var(--bg-primary) 100%);
+        }
+
+        .products-hero h1 {
+            font-size: 48px;
+            font-weight: 900;
+            margin-bottom: 16px;
+        }
+
+        .products-hero p {
+            font-size: 18px;
+            color: var(--text-secondary);
+        }
+
+        /* Products Grid */
+        .products-section {
+            padding: 80px 0 120px;
+        }
+
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 32px;
+        }
+
+        .product-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            padding: 40px;
+            position: relative;
+            transition: var(--transition);
+        }
+
+        .product-card:hover {
+            border-color: var(--accent-primary);
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .product-card.featured {
+            border-color: var(--accent-primary);
+            background: linear-gradient(180deg, rgba(99, 102, 241, 0.05) 0%, var(--bg-card) 100%);
+        }
+
+        .product-badge {
+            display: inline-block;
+            padding: 6px 14px;
+            background: var(--bg-tertiary);
+            border-radius: var(--radius-full);
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 20px;
+        }
+
+        .product-badge.best {
+            background: var(--accent-primary);
+            color: white;
+        }
+
+        .product-badge.premium {
+            background: linear-gradient(135deg, #f59e0b, #ef4444);
+            color: white;
+        }
+
+        .product-card h2 {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 12px;
+        }
+
+        .product-desc {
+            color: var(--text-secondary);
+            font-size: 15px;
+            margin-bottom: 24px;
+            line-height: 1.6;
+        }
+
+        .product-features {
+            margin-bottom: 32px;
+        }
+
+        .product-features li {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 0;
+            color: var(--text-secondary);
+            font-size: 15px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .product-features li:last-child {
+            border-bottom: none;
+        }
+
+        .product-features li::before {
+            content: '✓';
+            color: var(--success);
+            font-weight: bold;
+        }
+
+        .product-price-box {
+            display: flex;
+            align-items: baseline;
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        .product-price {
+            font-size: 36px;
+            font-weight: 900;
+            color: var(--accent-primary);
+        }
+
+        .product-original-price {
+            font-size: 18px;
+            color: var(--text-muted);
+            text-decoration: line-through;
+        }
+
+        .product-period {
+            font-size: 14px;
+            color: var(--text-muted);
+        }
+
+        .product-card .btn {
+            width: 100%;
+        }
+
+        /* FAQ Section */
+        .faq-section {
+            padding: 100px 0;
+            background: var(--bg-secondary);
+        }
+
+        .faq-section h2 {
+            text-align: center;
+            font-size: 36px;
+            margin-bottom: 60px;
+        }
+
+        .faq-list {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .faq-item {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            margin-bottom: 16px;
+            overflow: hidden;
+        }
+
+        .faq-question {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 24px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .faq-question::after {
+            content: '+';
+            font-size: 24px;
+            color: var(--text-muted);
+            transition: var(--transition);
+        }
+
+        .faq-item.active .faq-question::after {
+            transform: rotate(45deg);
+        }
+
+        .faq-answer {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+        }
+
+        .faq-item.active .faq-answer {
+            max-height: 300px;
+        }
+
+        .faq-answer p {
+            padding: 0 24px 20px;
+            color: var(--text-secondary);
+            line-height: 1.8;
+        }
+
+        /* CTA Section */
+        .products-cta {
+            padding: 100px 0;
+            text-align: center;
+        }
+
+        .products-cta h2 {
+            font-size: 36px;
+            margin-bottom: 16px;
+        }
+
+        .products-cta p {
+            color: var(--text-secondary);
+            margin-bottom: 32px;
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .products-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .products-hero h1 {
+                font-size: 32px;
+            }
+
+            .product-price {
+                font-size: 28px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="container">
+            <a href="index.html" class="logo">
+                <span class="logo-icon">◆</span>
+                <span class="logo-text">STUDIO<span class="accent">X</span></span>
+            </a>
+            <ul class="nav-links">
+                <li><a href="about.html">회사소개</a></li>
+                <li><a href="products.html" class="active">상품</a></li>
+                <li><a href="index.html#portfolio">포트폴리오</a></li>
+                <li><a href="index.html#contact">문의하기</a></li>
+                <li><a href="mypage.html" class="mypage-link">마이페이지</a></li>
+            </ul>
+            <div class="auth-buttons" id="authButtons">
+                <a href="login.html" class="auth-btn login">로그인</a>
+                <a href="signup.html" class="auth-btn signup">회원가입</a>
+            </div>
+            <div class="user-menu" id="userMenu" style="display: none;">
+                <span class="user-avatar" id="userAvatar"></span>
+                <span class="user-name" id="userName"></span>
+                <button class="auth-btn logout" onclick="logoutUser()">로그아웃</button>
+            </div>
+            <button class="mobile-menu-btn">☰</button>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="products-hero">
+        <div class="container">
+            <h1>디자인 패키지</h1>
+            <p>비즈니스에 맞는 최적의 패키지를 선택하세요</p>
+        </div>
+    </section>
+
+    <!-- Products Grid -->
+    <section class="products-section">
+        <div class="container">
+            <div class="products-grid">
+                <!-- 테스트 상품 (100원) -->
+                <div class="product-card" style="border-color: #f59e0b;">
+                    <span class="product-badge" style="background: #f59e0b; color: white;">TEST</span>
+                    <h2>테스트 상품</h2>
+                    <p class="product-desc">결제 시스템 테스트용 100원 상품입니다. 실제 서비스 상품이 아닙니다.</p>
+                    <ul class="product-features">
+                        <li>결제 시스템 테스트용</li>
+                        <li>실제 상품이 아닙니다</li>
+                        <li>테스트 완료 후 환불 가능</li>
+                    </ul>
+                    <div class="product-price-box">
+                        <span class="product-price">₩100</span>
+                        <span class="product-period">/ 즉시</span>
+                    </div>
+                    <a href="product-detail.html?id=test-100" class="btn primary">테스트 결제하기</a>
+                </div>
+
+                <!-- 브랜드 스타터 패키지 -->
+                <div class="product-card">
+                    <span class="product-badge">STARTER</span>
+                    <h2>브랜드 스타터</h2>
+                    <p class="product-desc">신규 브랜드를 위한 기본 아이덴티티 패키지. 작지만 강력한 첫 인상을 만들어드립니다.</p>
+                    <ul class="product-features">
+                        <li>로고 디자인 (3안 제시)</li>
+                        <li>명함 디자인</li>
+                        <li>컬러 팔레트 & 타이포그래피</li>
+                        <li>기본 브랜드 가이드라인</li>
+                        <li>원본 파일 제공 (AI, PDF)</li>
+                    </ul>
+                    <div class="product-price-box">
+                        <span class="product-price">₩1,500,000</span>
+                        <span class="product-period">/ 2주 소요</span>
+                    </div>
+                    <a href="product-detail.html?id=bi-starter" class="btn primary">자세히 보기</a>
+                </div>
+
+                <!-- 웹사이트 패키지 -->
+                <div class="product-card featured">
+                    <span class="product-badge best">BEST</span>
+                    <h2>웹사이트 패키지</h2>
+                    <p class="product-desc">전환율 높은 반응형 웹사이트. 랜딩페이지부터 기업 웹사이트까지 최적의 솔루션을 제공합니다.</p>
+                    <ul class="product-features">
+                        <li>메인 + 서브페이지 (최대 5페이지)</li>
+                        <li>반응형 디자인 (PC/태블릿/모바일)</li>
+                        <li>인터랙티브 프로토타입</li>
+                        <li>디자인 시스템 문서</li>
+                        <li>원본 파일 + 개발 에셋 제공</li>
+                    </ul>
+                    <div class="product-price-box">
+                        <span class="product-price">₩2,000,000</span>
+                        <span class="product-period">/ 3-4주 소요</span>
+                    </div>
+                    <a href="product-detail.html?id=web-package" class="btn primary">자세히 보기</a>
+                </div>
+
+                <!-- 앱 UI/UX 풀 패키지 -->
+                <div class="product-card">
+                    <span class="product-badge">PREMIUM</span>
+                    <h2>앱 UI/UX 풀 패키지</h2>
+                    <p class="product-desc">사용자 중심의 직관적인 모바일 앱 경험. 리서치부터 프로토타입까지 풀 서비스를 제공합니다.</p>
+                    <ul class="product-features">
+                        <li>사용자 리서치 & 페르소나</li>
+                        <li>와이어프레임 & 유저플로우</li>
+                        <li>UI 디자인 (iOS/Android)</li>
+                        <li>인터랙티브 프로토타입</li>
+                        <li>개발 핸드오프 문서</li>
+                    </ul>
+                    <div class="product-price-box">
+                        <span class="product-price">₩3,000,000</span>
+                        <span class="product-period">/ 4-6주 소요</span>
+                    </div>
+                    <a href="product-detail.html?id=app-full" class="btn primary">자세히 보기</a>
+                </div>
+
+                <!-- 올인원 패키지 -->
+                <div class="product-card">
+                    <span class="product-badge premium">ALL-IN-ONE</span>
+                    <h2>올인원 패키지</h2>
+                    <p class="product-desc">브랜딩 + 웹 + 앱 통합 솔루션. 새로운 비즈니스의 완벽한 런칭을 위한 올인원 패키지입니다.</p>
+                    <ul class="product-features">
+                        <li>풀 브랜드 아이덴티티</li>
+                        <li>웹사이트 디자인 (최대 10페이지)</li>
+                        <li>앱 UI/UX 디자인</li>
+                        <li>마케팅 에셋 (SNS, 배너 등)</li>
+                        <li>3개월 사후 지원</li>
+                    </ul>
+                    <div class="product-price-box">
+                        <span class="product-price">₩5,500,000</span>
+                        <span class="product-original-price">₩6,500,000</span>
+                        <span class="product-period">/ 8주 소요</span>
+                    </div>
+                    <a href="product-detail.html?id=all-in-one" class="btn primary">자세히 보기</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ Section -->
+    <section class="faq-section">
+        <div class="container">
+            <h2>자주 묻는 질문</h2>
+            <div class="faq-list">
+                <div class="faq-item">
+                    <div class="faq-question">수정은 몇 번까지 가능한가요?</div>
+                    <div class="faq-answer">
+                        <p>모든 패키지에 무제한 수정이 포함되어 있습니다. 고객님이 100% 만족하실 때까지 수정을 진행해드립니다.</p>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question">결제는 어떻게 진행되나요?</div>
+                    <div class="faq-answer">
+                        <p>착수금 50%, 완료 후 잔금 50%로 진행됩니다. 카드 결제가 가능하며, 세금계산서 발행도 지원합니다.</p>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question">급한 일정도 가능한가요?</div>
+                    <div class="faq-answer">
+                        <p>네, 급행 처리 옵션을 선택하시면 기간을 단축할 수 있습니다. 상세 페이지에서 옵션을 확인해주세요.</p>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question">저작권은 어떻게 되나요?</div>
+                    <div class="faq-answer">
+                        <p>프로젝트 완료 및 잔금 결제 후 모든 디자인의 저작권은 100% 고객님께 양도됩니다.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="products-cta">
+        <div class="container">
+            <h2>어떤 패키지가 맞을지 고민되시나요?</h2>
+            <p>무료 상담을 통해 비즈니스에 최적화된 솔루션을 제안받아보세요</p>
+            <a href="index.html#contact" class="btn primary large">무료 상담 신청</a>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <div class="logo">
+                        <span class="logo-icon">◆</span>
+                        <span class="logo-text">STUDIO<span class="accent">X</span></span>
+                    </div>
+                    <p>디자인으로 비즈니스의 성장을 이끄는<br>전문 디자인 에이전시입니다.</p>
+                </div>
+                <div class="footer-section">
+                    <h4>서비스</h4>
+                    <ul>
+                        <li><a href="products.html">브랜드 아이덴티티</a></li>
+                        <li><a href="products.html">웹사이트 디자인</a></li>
+                        <li><a href="products.html">앱 UI/UX</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>회사</h4>
+                    <ul>
+                        <li><a href="about.html">회사소개</a></li>
+                        <li><a href="index.html#portfolio">포트폴리오</a></li>
+                        <li><a href="index.html#contact">문의하기</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>연락처</h4>
+                    <ul>
+                        <li>contact@studiox.com</li>
+                        <li>02-1234-5678</li>
+                        <li>서울특별시 강남구</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 STUDIO X. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-analytics-compat.js"></script>
+    <script src="js/firebase-config.js"></script>
+    <script src="js/db.js"></script>
+    <script src="js/auth.js"></script>
+
+    <script>
+        // FAQ Accordion
+        document.querySelectorAll('.faq-item').forEach(item => {
+            item.querySelector('.faq-question').addEventListener('click', () => {
+                document.querySelectorAll('.faq-item').forEach(other => {
+                    if (other !== item) other.classList.remove('active');
+                });
+                item.classList.toggle('active');
+            });
+        });
+    </script>
+</body>
+</html>

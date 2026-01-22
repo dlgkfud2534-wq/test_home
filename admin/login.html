@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>관리자 로그인 | STUDIO X</title>
+    <meta name="robots" content="noindex, nofollow">
+    <meta name="theme-color" content="#0a0a0f">
+    <link rel="icon" href="../favicon.ico">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #0a0a0f;
+            --bg-secondary: #12121a;
+            --card-bg: rgba(255, 255, 255, 0.03);
+            --border-color: rgba(255, 255, 255, 0.08);
+            --text-primary: #ffffff;
+            --text-secondary: #a0a0a0;
+            --text-muted: #666666;
+            --accent-primary: #6366f1;
+            --accent-secondary: #8b5cf6;
+            --success: #10b981;
+            --error: #ef4444;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .login-container {
+            width: 100%;
+            max-width: 420px;
+        }
+
+        .login-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            padding: 50px 40px;
+        }
+
+        .login-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .login-logo {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 20px;
+            text-decoration: none;
+        }
+
+        .login-logo .icon {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+
+        .login-logo .text {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .login-header h1 {
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+        }
+
+        .login-header p {
+            color: var(--text-muted);
+        }
+
+        .admin-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            margin-top: 15px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 14px 18px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            color: var(--text-primary);
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--accent-primary);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+        }
+
+        .form-group input::placeholder {
+            color: var(--text-muted);
+        }
+
+        .btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+            border: none;
+            border-radius: 10px;
+            color: white;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(99, 102, 241, 0.3);
+        }
+
+        .btn:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .message {
+            padding: 12px 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-size: 0.9rem;
+        }
+
+        .message.error {
+            background: rgba(239, 68, 68, 0.15);
+            color: #ef4444;
+            border: 1px solid rgba(239, 68, 68, 0.3);
+        }
+
+        .message.success {
+            background: rgba(16, 185, 129, 0.15);
+            color: #10b981;
+            border: 1px solid rgba(16, 185, 129, 0.3);
+        }
+
+        .back-link {
+            display: block;
+            text-align: center;
+            margin-top: 30px;
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: color 0.3s ease;
+        }
+
+        .back-link:hover {
+            color: var(--accent-primary);
+        }
+
+        .security-notice {
+            margin-top: 30px;
+            padding: 15px;
+            background: rgba(245, 158, 11, 0.1);
+            border: 1px solid rgba(245, 158, 11, 0.2);
+            border-radius: 10px;
+            font-size: 0.85rem;
+            color: #f59e0b;
+        }
+
+        .security-notice .icon {
+            margin-right: 8px;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <div class="login-card">
+            <div class="login-header">
+                <a href="../index.html" class="login-logo">
+                    <span class="icon">◆</span>
+                    <span class="text">STUDIO X</span>
+                </a>
+                <h1>관리자 로그인</h1>
+                <p>관리자 계정으로 로그인하세요</p>
+                <span class="admin-badge">🔐 Admin Only</span>
+            </div>
+
+            <div id="messageContainer"></div>
+
+            <form id="adminLoginForm" onsubmit="handleAdminLogin(event)">
+                <div class="form-group">
+                    <label for="email">이메일</label>
+                    <input type="email" id="email" required placeholder="admin@example.com" autocomplete="email">
+                </div>
+
+                <div class="form-group">
+                    <label for="password">비밀번호</label>
+                    <input type="password" id="password" required placeholder="비밀번호 입력" autocomplete="current-password">
+                </div>
+
+                <button type="submit" class="btn" id="submitBtn">로그인</button>
+            </form>
+
+            <a href="../index.html" class="back-link">← 홈으로 돌아가기</a>
+
+            <div class="security-notice">
+                <span class="icon">⚠️</span>
+                이 페이지는 관리자 전용입니다. 무단 접근 시도는 기록됩니다.
+            </div>
+        </div>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-analytics-compat.js"></script>
+    <script src="../js/firebase-config.js"></script>
+    <script src="../js/db.js"></script>
+
+    <script>
+        // 이미 로그인된 관리자는 대시보드로 리다이렉트
+        auth.onAuthStateChanged(async (user) => {
+            if (user) {
+                const isAdmin = await isUserAdmin(user.uid);
+                if (isAdmin) {
+                    window.location.href = 'dashboard.html';
+                }
+            }
+        });
+
+        // 관리자 로그인 처리
+        async function handleAdminLogin(event) {
+            event.preventDefault();
+
+            const email = document.getElementById('email').value.trim();
+            const password = document.getElementById('password').value;
+            const submitBtn = document.getElementById('submitBtn');
+            const messageContainer = document.getElementById('messageContainer');
+
+            submitBtn.disabled = true;
+            submitBtn.textContent = '로그인 중...';
+            messageContainer.innerHTML = '';
+
+            try {
+                // Firebase Auth로 로그인
+                const userCredential = await auth.signInWithEmailAndPassword(email, password);
+                const user = userCredential.user;
+
+                // 관리자 권한 확인
+                const isAdmin = await isUserAdmin(user.uid);
+
+                if (isAdmin) {
+                    messageContainer.innerHTML = '<div class="message success">로그인 성공! 대시보드로 이동합니다...</div>';
+                    setTimeout(() => {
+                        window.location.href = 'dashboard.html';
+                    }, 1000);
+                } else {
+                    // 관리자가 아니면 로그아웃
+                    await auth.signOut();
+                    messageContainer.innerHTML = '<div class="message error">관리자 권한이 없습니다.</div>';
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = '로그인';
+                }
+            } catch (error) {
+                let errorMessage = '로그인에 실패했습니다.';
+
+                switch (error.code) {
+                    case 'auth/user-not-found':
+                        errorMessage = '등록되지 않은 이메일입니다.';
+                        break;
+                    case 'auth/wrong-password':
+                        errorMessage = '비밀번호가 올바르지 않습니다.';
+                        break;
+                    case 'auth/invalid-email':
+                        errorMessage = '유효하지 않은 이메일 형식입니다.';
+                        break;
+                    case 'auth/too-many-requests':
+                        errorMessage = '너무 많은 시도가 있었습니다. 잠시 후 다시 시도해주세요.';
+                        break;
+                }
+
+                messageContainer.innerHTML = `<div class="message error">${errorMessage}</div>`;
+                submitBtn.disabled = false;
+                submitBtn.textContent = '로그인';
+
+                // 보안: 실패한 로그인 시도 기록 (선택적)
+                console.warn('Admin login attempt failed:', email);
+            }
+        }
+    </script>
+</body>
+</html>

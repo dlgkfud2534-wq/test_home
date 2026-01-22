@@ -1,0 +1,894 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>마이페이지 | STUDIO X</title>
+    <meta name="description" content="STUDIO X 마이페이지 - 내 정보 및 주문 내역 관리">
+    <meta name="theme-color" content="#0a0a0f">
+    <link rel="icon" href="favicon.ico">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/common.css">
+    <style>
+        .mypage-container {
+            min-height: 100vh;
+            padding: 120px 20px 60px;
+        }
+
+        .mypage-wrapper {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            gap: 30px;
+        }
+
+        /* 사이드바 */
+        .mypage-sidebar {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 30px;
+            height: fit-content;
+            position: sticky;
+            top: 100px;
+        }
+
+        .profile-section {
+            text-align: center;
+            padding-bottom: 25px;
+            border-bottom: 1px solid var(--border-color);
+            margin-bottom: 25px;
+        }
+
+        .profile-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            font-weight: 700;
+            color: white;
+            margin: 0 auto 15px;
+        }
+
+        .profile-name {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 5px;
+        }
+
+        .profile-email {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+        }
+
+        .sidebar-menu {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .sidebar-menu li {
+            margin-bottom: 5px;
+        }
+
+        .sidebar-menu a {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 15px;
+            border-radius: 10px;
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .sidebar-menu a:hover,
+        .sidebar-menu a.active {
+            background: rgba(99, 102, 241, 0.1);
+            color: var(--accent-primary);
+        }
+
+        .sidebar-menu .icon {
+            font-size: 1.2rem;
+        }
+
+        /* 메인 콘텐츠 */
+        .mypage-content {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 30px;
+        }
+
+        .content-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .content-header h1 {
+            font-size: 1.5rem;
+            color: var(--text-primary);
+        }
+
+        /* 탭 콘텐츠 */
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* 주문 내역 */
+        .orders-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .order-card {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .order-card:hover {
+            border-color: var(--accent-primary);
+        }
+
+        .order-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 15px;
+        }
+
+        .order-id {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-bottom: 5px;
+        }
+
+        .order-product {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .order-status {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+
+        .order-status.pending {
+            background: rgba(251, 191, 36, 0.15);
+            color: #fbbf24;
+        }
+
+        .order-status.paid,
+        .order-status.completed {
+            background: rgba(16, 185, 129, 0.15);
+            color: #10b981;
+        }
+
+        .order-status.cancelled {
+            background: rgba(239, 68, 68, 0.15);
+            color: #ef4444;
+        }
+
+        .order-status.processing {
+            background: rgba(99, 102, 241, 0.15);
+            color: #6366f1;
+        }
+
+        .order-details {
+            display: flex;
+            gap: 30px;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .order-details span {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* 프로필 설정 */
+        .profile-form {
+            max-width: 500px;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px 15px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            color: var(--text-primary);
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--accent-primary);
+        }
+
+        .form-group input:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        /* 빈 상태 */
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+        }
+
+        .empty-state .icon {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            opacity: 0.3;
+        }
+
+        .empty-state h3 {
+            font-size: 1.2rem;
+            color: var(--text-primary);
+            margin-bottom: 10px;
+        }
+
+        .empty-state p {
+            color: var(--text-muted);
+            margin-bottom: 20px;
+        }
+
+        /* 로딩 */
+        .loading-spinner {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 60px;
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid var(--border-color);
+            border-top-color: var(--accent-primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* 메시지 */
+        .message {
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .message.success {
+            background: rgba(16, 185, 129, 0.15);
+            color: #10b981;
+            border: 1px solid rgba(16, 185, 129, 0.3);
+        }
+
+        .message.error {
+            background: rgba(239, 68, 68, 0.15);
+            color: #ef4444;
+            border: 1px solid rgba(239, 68, 68, 0.3);
+        }
+
+        /* 로그인 필요 */
+        .login-required {
+            min-height: 60vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+
+        .login-required-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 60px 40px;
+            max-width: 400px;
+        }
+
+        .login-required-card h2 {
+            margin-bottom: 15px;
+            color: var(--text-primary);
+        }
+
+        .login-required-card p {
+            color: var(--text-secondary);
+            margin-bottom: 25px;
+        }
+
+        /* 반응형 */
+        @media (max-width: 900px) {
+            .mypage-wrapper {
+                grid-template-columns: 1fr;
+            }
+
+            .mypage-sidebar {
+                position: static;
+            }
+
+            .sidebar-menu {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 10px;
+            }
+
+            .sidebar-menu li {
+                margin-bottom: 0;
+            }
+
+            .sidebar-menu a {
+                padding: 10px 15px;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .order-details {
+                flex-direction: column;
+                gap: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="container">
+            <a href="index.html" class="logo">
+                <span class="logo-icon">◆</span>
+                <span class="logo-text">STUDIO<span class="accent">X</span></span>
+            </a>
+            <ul class="nav-links">
+                <li><a href="about.html">회사소개</a></li>
+                <li><a href="products.html">상품</a></li>
+                <li><a href="index.html#portfolio">포트폴리오</a></li>
+                <li><a href="index.html#contact">문의하기</a></li>
+                <li><a href="mypage.html" class="mypage-link active">마이페이지</a></li>
+            </ul>
+            <div class="auth-buttons" id="authButtons">
+                <a href="login.html" class="auth-btn login">로그인</a>
+                <a href="signup.html" class="auth-btn signup">회원가입</a>
+            </div>
+            <div class="user-menu" id="userMenu" style="display: none;">
+                <span class="user-avatar" id="userAvatar"></span>
+                <span class="user-name" id="userName"></span>
+                <button class="auth-btn logout" onclick="logoutUser()">로그아웃</button>
+            </div>
+            <button class="mobile-menu-btn">☰</button>
+        </div>
+    </nav>
+
+    <!-- 로그인 필요 상태 -->
+    <div id="loginRequired" class="login-required" style="display: none;">
+        <div class="login-required-card">
+            <h2>로그인이 필요합니다</h2>
+            <p>마이페이지를 이용하시려면 로그인해주세요.</p>
+            <a href="login.html" class="btn primary">로그인하기</a>
+        </div>
+    </div>
+
+    <!-- 마이페이지 콘텐츠 -->
+    <main id="mypageContent" class="mypage-container" style="display: none;">
+        <div class="mypage-wrapper">
+            <!-- 사이드바 -->
+            <aside class="mypage-sidebar">
+                <div class="profile-section">
+                    <div class="profile-avatar" id="profileAvatar">U</div>
+                    <div class="profile-name" id="profileName">사용자</div>
+                    <div class="profile-email" id="profileEmail">user@example.com</div>
+                </div>
+
+                <ul class="sidebar-menu">
+                    <li>
+                        <a href="#orders" class="active" onclick="showTab('orders')">
+                            <span class="icon">📦</span>
+                            주문 내역
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#profile" onclick="showTab('profile')">
+                            <span class="icon">👤</span>
+                            프로필 설정
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#security" onclick="showTab('security')">
+                            <span class="icon">🔒</span>
+                            보안 설정
+                        </a>
+                    </li>
+                </ul>
+            </aside>
+
+            <!-- 메인 콘텐츠 -->
+            <div class="mypage-content">
+                <!-- 주문 내역 탭 -->
+                <div id="orders" class="tab-content active">
+                    <div class="content-header">
+                        <h1>주문 내역</h1>
+                    </div>
+
+                    <div id="ordersLoading" class="loading-spinner">
+                        <div class="spinner"></div>
+                    </div>
+
+                    <div id="ordersList" class="orders-list" style="display: none;">
+                        <!-- 주문 내역이 동적으로 추가됨 -->
+                    </div>
+
+                    <div id="ordersEmpty" class="empty-state" style="display: none;">
+                        <div class="icon">📭</div>
+                        <h3>주문 내역이 없습니다</h3>
+                        <p>아직 주문한 상품이 없습니다.</p>
+                        <a href="products.html" class="btn primary">상품 둘러보기</a>
+                    </div>
+                </div>
+
+                <!-- 프로필 설정 탭 -->
+                <div id="profile" class="tab-content">
+                    <div class="content-header">
+                        <h1>프로필 설정</h1>
+                    </div>
+
+                    <div id="profileMessage"></div>
+
+                    <form id="profileForm" class="profile-form" onsubmit="handleProfileUpdate(event)">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="editName">이름</label>
+                                <input type="text" id="editName" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="editPhone">연락처</label>
+                                <input type="tel" id="editPhone" placeholder="010-0000-0000">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="editEmail">이메일</label>
+                            <input type="email" id="editEmail" disabled>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="editCompany">회사/소속</label>
+                            <input type="text" id="editCompany" placeholder="회사명 또는 소속">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="editBio">자기소개</label>
+                            <textarea id="editBio" rows="3" placeholder="간단한 자기소개"></textarea>
+                        </div>
+
+                        <button type="submit" class="btn primary">저장하기</button>
+                    </form>
+                </div>
+
+                <!-- 보안 설정 탭 -->
+                <div id="security" class="tab-content">
+                    <div class="content-header">
+                        <h1>보안 설정</h1>
+                    </div>
+
+                    <div id="securityMessage"></div>
+
+                    <form id="passwordForm" class="profile-form" onsubmit="handlePasswordChange(event)">
+                        <div class="form-group">
+                            <label for="currentPassword">현재 비밀번호</label>
+                            <input type="password" id="currentPassword" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="newPassword">새 비밀번호</label>
+                            <input type="password" id="newPassword" required placeholder="8자 이상">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="confirmNewPassword">새 비밀번호 확인</label>
+                            <input type="password" id="confirmNewPassword" required>
+                        </div>
+
+                        <button type="submit" class="btn primary">비밀번호 변경</button>
+                    </form>
+
+                    <div style="margin-top: 40px; padding-top: 30px; border-top: 1px solid var(--border-color);">
+                        <h3 style="color: var(--text-primary); margin-bottom: 15px;">계정 삭제</h3>
+                        <p style="color: var(--text-muted); margin-bottom: 15px; font-size: 0.9rem;">
+                            계정을 삭제하면 모든 데이터가 영구적으로 삭제됩니다.
+                        </p>
+                        <button class="btn outline" style="color: #ef4444; border-color: #ef4444;" onclick="handleDeleteAccount()">
+                            계정 삭제
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-analytics-compat.js"></script>
+    <script src="js/firebase-config.js"></script>
+    <script src="js/db.js"></script>
+    <script src="js/auth.js"></script>
+
+    <script>
+        let currentUser = null;
+        let isGuestMode = false;
+
+        // 인증 상태 체크
+        auth.onAuthStateChanged(async (user) => {
+            // 항상 마이페이지 콘텐츠 표시 (게스트 모드 지원)
+            document.getElementById('loginRequired').style.display = 'none';
+            document.getElementById('mypageContent').style.display = 'block';
+
+            if (user) {
+                currentUser = user;
+                isGuestMode = false;
+
+                // 프로필 정보 로드
+                loadUserProfile(user);
+
+                // 주문 내역 로드 (Firebase + 로컬)
+                loadUserOrders(user.uid);
+            } else {
+                // 게스트 모드
+                isGuestMode = true;
+                loadGuestProfile();
+                loadGuestOrders();
+            }
+        });
+
+        // 게스트 프로필 로드
+        function loadGuestProfile() {
+            document.getElementById('profileAvatar').textContent = 'G';
+            document.getElementById('profileName').textContent = '게스트';
+            document.getElementById('profileEmail').textContent = '로그인하면 더 많은 기능을 이용할 수 있습니다';
+            document.getElementById('editName').value = '게스트';
+            document.getElementById('editEmail').value = '-';
+        }
+
+        // 게스트 주문 내역 로드 (로컬 스토리지)
+        function loadGuestOrders() {
+            const loadingEl = document.getElementById('ordersLoading');
+            const listEl = document.getElementById('ordersList');
+            const emptyEl = document.getElementById('ordersEmpty');
+
+            loadingEl.style.display = 'none';
+
+            // 로컬 스토리지에서 주문 내역 가져오기
+            const localOrders = JSON.parse(localStorage.getItem('studioXOrders') || '[]');
+
+            if (localOrders.length > 0) {
+                listEl.style.display = 'flex';
+                listEl.innerHTML = localOrders
+                    .sort((a, b) => new Date(b.completedAt || 0) - new Date(a.completedAt || 0))
+                    .map(order => createOrderCardFromLocal(order))
+                    .join('');
+            } else {
+                emptyEl.style.display = 'block';
+            }
+        }
+
+        // 로컬 주문 카드 생성
+        function createOrderCardFromLocal(order) {
+            const statusText = {
+                'pending': '결제 대기',
+                'paid': '결제 완료',
+                'processing': '진행 중',
+                'completed': '완료',
+                'cancelled': '취소됨'
+            };
+
+            const date = order.completedAt ?
+                new Date(order.completedAt).toLocaleDateString('ko-KR') :
+                (order.timestamp ? new Date(order.timestamp).toLocaleDateString('ko-KR') : '-');
+
+            return `
+                <div class="order-card">
+                    <div class="order-header">
+                        <div>
+                            <div class="order-id">주문번호: ${order.orderId || '-'}</div>
+                            <div class="order-product">${order.productName || '상품명 없음'}</div>
+                        </div>
+                        <span class="order-status ${order.status}">${statusText[order.status] || order.status}</span>
+                    </div>
+                    <div class="order-details">
+                        <span>📅 ${date}</span>
+                        <span>💰 ${(order.amount || order.totalAmount || 0).toLocaleString('ko-KR')}원</span>
+                        ${order.isGuest ? '<span style="color: #f59e0b;">🏷️ 게스트 주문</span>' : ''}
+                    </div>
+                </div>
+            `;
+        }
+
+        // 사용자 프로필 로드
+        async function loadUserProfile(user) {
+            // 기본 정보 설정
+            const displayName = user.displayName || '사용자';
+            const email = user.email;
+            const initial = displayName.charAt(0).toUpperCase();
+
+            document.getElementById('profileAvatar').textContent = initial;
+            document.getElementById('profileName').textContent = displayName;
+            document.getElementById('profileEmail').textContent = email;
+            document.getElementById('editName').value = displayName;
+            document.getElementById('editEmail').value = email;
+
+            // Firestore에서 추가 정보 로드
+            const result = await getUserProfile(user.uid);
+            if (result.success && result.data) {
+                const profile = result.data;
+                if (profile.phone) document.getElementById('editPhone').value = profile.phone;
+                if (profile.company) document.getElementById('editCompany').value = profile.company;
+                if (profile.bio) document.getElementById('editBio').value = profile.bio;
+            }
+        }
+
+        // 주문 내역 로드 (Firebase + 로컬 스토리지 병합)
+        async function loadUserOrders(userId) {
+            const loadingEl = document.getElementById('ordersLoading');
+            const listEl = document.getElementById('ordersList');
+            const emptyEl = document.getElementById('ordersEmpty');
+
+            loadingEl.style.display = 'flex';
+            listEl.style.display = 'none';
+            emptyEl.style.display = 'none';
+
+            // Firebase에서 주문 가져오기
+            const result = await getUserOrders(userId);
+            const firebaseOrders = result.success ? result.data : [];
+
+            // 로컬 스토리지에서도 주문 가져오기
+            const localOrders = JSON.parse(localStorage.getItem('studioXOrders') || '[]');
+
+            // 병합 (중복 제거 - orderId 기준)
+            const orderMap = new Map();
+
+            // Firebase 주문 추가
+            firebaseOrders.forEach(order => {
+                const key = order.orderId || order.id;
+                orderMap.set(key, { ...order, source: 'firebase' });
+            });
+
+            // 로컬 주문 추가 (중복 아닌 것만)
+            localOrders.forEach(order => {
+                const key = order.orderId;
+                if (!orderMap.has(key)) {
+                    orderMap.set(key, { ...order, source: 'local' });
+                }
+            });
+
+            const allOrders = Array.from(orderMap.values());
+
+            loadingEl.style.display = 'none';
+
+            if (allOrders.length > 0) {
+                listEl.style.display = 'flex';
+                listEl.innerHTML = allOrders
+                    .sort((a, b) => {
+                        const dateA = a.createdAt?.seconds ? a.createdAt.seconds * 1000 : new Date(a.completedAt || a.timestamp || 0).getTime();
+                        const dateB = b.createdAt?.seconds ? b.createdAt.seconds * 1000 : new Date(b.completedAt || b.timestamp || 0).getTime();
+                        return dateB - dateA;
+                    })
+                    .map(order => order.source === 'firebase' ? createOrderCard(order) : createOrderCardFromLocal(order))
+                    .join('');
+            } else {
+                emptyEl.style.display = 'block';
+            }
+        }
+
+        // 주문 카드 생성
+        function createOrderCard(order) {
+            const statusText = {
+                'pending': '결제 대기',
+                'paid': '결제 완료',
+                'processing': '진행 중',
+                'completed': '완료',
+                'cancelled': '취소됨'
+            };
+
+            const date = order.createdAt ?
+                new Date(order.createdAt.seconds * 1000).toLocaleDateString('ko-KR') :
+                '-';
+
+            return `
+                <div class="order-card">
+                    <div class="order-header">
+                        <div>
+                            <div class="order-id">주문번호: ${order.orderId || order.id}</div>
+                            <div class="order-product">${order.productName || '상품명 없음'}</div>
+                        </div>
+                        <span class="order-status ${order.status}">${statusText[order.status] || order.status}</span>
+                    </div>
+                    <div class="order-details">
+                        <span>📅 ${date}</span>
+                        <span>💰 ${(order.amount || 0).toLocaleString('ko-KR')}원</span>
+                    </div>
+                </div>
+            `;
+        }
+
+        // 탭 전환
+        function showTab(tabId) {
+            // 모든 탭 콘텐츠 숨기기
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+
+            // 선택된 탭 표시
+            document.getElementById(tabId).classList.add('active');
+
+            // 메뉴 활성화 상태 업데이트
+            document.querySelectorAll('.sidebar-menu a').forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href') === '#' + tabId) {
+                    link.classList.add('active');
+                }
+            });
+        }
+
+        // 프로필 업데이트
+        async function handleProfileUpdate(event) {
+            event.preventDefault();
+
+            const messageEl = document.getElementById('profileMessage');
+            const name = document.getElementById('editName').value.trim();
+            const phone = document.getElementById('editPhone').value.trim();
+            const company = document.getElementById('editCompany').value.trim();
+            const bio = document.getElementById('editBio').value.trim();
+
+            try {
+                // Firebase Auth 프로필 업데이트
+                await currentUser.updateProfile({ displayName: name });
+
+                // Firestore 프로필 업데이트
+                await saveUserProfile(currentUser.uid, {
+                    name,
+                    phone,
+                    company,
+                    bio,
+                    email: currentUser.email
+                });
+
+                // UI 업데이트
+                document.getElementById('profileName').textContent = name;
+                document.getElementById('profileAvatar').textContent = name.charAt(0).toUpperCase();
+
+                messageEl.innerHTML = '<div class="message success">프로필이 성공적으로 업데이트되었습니다.</div>';
+            } catch (error) {
+                messageEl.innerHTML = `<div class="message error">오류: ${error.message}</div>`;
+            }
+
+            setTimeout(() => {
+                messageEl.innerHTML = '';
+            }, 3000);
+        }
+
+        // 비밀번호 변경
+        async function handlePasswordChange(event) {
+            event.preventDefault();
+
+            const messageEl = document.getElementById('securityMessage');
+            const currentPassword = document.getElementById('currentPassword').value;
+            const newPassword = document.getElementById('newPassword').value;
+            const confirmNewPassword = document.getElementById('confirmNewPassword').value;
+
+            if (newPassword !== confirmNewPassword) {
+                messageEl.innerHTML = '<div class="message error">새 비밀번호가 일치하지 않습니다.</div>';
+                return;
+            }
+
+            if (newPassword.length < 8) {
+                messageEl.innerHTML = '<div class="message error">비밀번호는 8자 이상이어야 합니다.</div>';
+                return;
+            }
+
+            try {
+                // 재인증
+                const credential = firebase.auth.EmailAuthProvider.credential(
+                    currentUser.email,
+                    currentPassword
+                );
+                await currentUser.reauthenticateWithCredential(credential);
+
+                // 비밀번호 변경
+                await currentUser.updatePassword(newPassword);
+
+                messageEl.innerHTML = '<div class="message success">비밀번호가 성공적으로 변경되었습니다.</div>';
+                document.getElementById('passwordForm').reset();
+            } catch (error) {
+                let errorMessage = '비밀번호 변경에 실패했습니다.';
+                if (error.code === 'auth/wrong-password') {
+                    errorMessage = '현재 비밀번호가 올바르지 않습니다.';
+                }
+                messageEl.innerHTML = `<div class="message error">${errorMessage}</div>`;
+            }
+
+            setTimeout(() => {
+                messageEl.innerHTML = '';
+            }, 3000);
+        }
+
+        // 계정 삭제
+        async function handleDeleteAccount() {
+            if (!confirm('정말로 계정을 삭제하시겠습니까?\n이 작업은 되돌릴 수 없습니다.')) {
+                return;
+            }
+
+            const password = prompt('계정 삭제를 위해 비밀번호를 입력해주세요:');
+            if (!password) return;
+
+            try {
+                const credential = firebase.auth.EmailAuthProvider.credential(
+                    currentUser.email,
+                    password
+                );
+                await currentUser.reauthenticateWithCredential(credential);
+
+                // Firestore 데이터 삭제
+                await db.collection('users').doc(currentUser.uid).delete();
+
+                // 계정 삭제
+                await currentUser.delete();
+
+                alert('계정이 삭제되었습니다.');
+                window.location.href = 'index.html';
+            } catch (error) {
+                alert('계정 삭제에 실패했습니다: ' + error.message);
+            }
+        }
+    </script>
+</body>
+</html>

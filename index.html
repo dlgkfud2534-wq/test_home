@@ -44,6 +44,7 @@
 
     <!-- Stylesheets -->
     <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="css/common.css">
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
 
     <!-- JSON-LD Structured Data -->
@@ -114,17 +115,32 @@
     <!-- Navigation -->
     <nav class="navbar">
         <div class="container">
-            <div class="logo">
+            <a href="index.html" class="logo">
                 <span class="logo-icon">◆</span>
                 <span class="logo-text">STUDIO<span class="accent">X</span></span>
-            </div>
+            </a>
             <ul class="nav-links">
-                <li><a href="#services">서비스</a></li>
+                <li><a href="about.html">회사소개</a></li>
+                <li><a href="products.html">상품</a></li>
                 <li><a href="#portfolio">포트폴리오</a></li>
                 <li><a href="#process">프로세스</a></li>
                 <li><a href="#contact">문의하기</a></li>
+                <li><a href="mypage.html" class="mypage-link">마이페이지</a></li>
             </ul>
-            <button class="cta-btn nav-cta">무료 상담 받기</button>
+
+            <!-- 비로그인 상태 -->
+            <div class="auth-buttons" id="authButtons">
+                <a href="login.html" class="auth-btn login">로그인</a>
+                <a href="signup.html" class="auth-btn signup">회원가입</a>
+            </div>
+
+            <!-- 로그인 상태 -->
+            <div class="user-menu" id="userMenu" style="display: none;">
+                <span class="user-avatar" id="userAvatar"></span>
+                <span class="user-name" id="userName"></span>
+                <button class="auth-btn logout" onclick="logoutUser()">로그아웃</button>
+            </div>
+
             <button class="mobile-menu-btn">☰</button>
         </div>
     </nav>
@@ -307,22 +323,54 @@
             <h2 class="section-title">최근 프로젝트</h2>
             <div class="portfolio-grid">
                 <div class="portfolio-item">
-                    <div class="portfolio-image" style="background: #6366f1;">
+                    <div class="portfolio-image" style="background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);">
                         <span class="portfolio-category">브랜딩</span>
+                        <div class="portfolio-preview">
+                            <div class="preview-logo">A</div>
+                            <div class="preview-text">
+                                <span>BRAND</span>
+                                <span>IDENTITY</span>
+                            </div>
+                        </div>
                     </div>
                     <h4>테크스타트업 A사 리브랜딩</h4>
                     <p>브랜드 인지도 300% 상승</p>
                 </div>
                 <div class="portfolio-item">
-                    <div class="portfolio-image" style="background: #4f46e5;">
+                    <div class="portfolio-image" style="background: linear-gradient(135deg, #4f46e5 0%, #6366f1 100%);">
                         <span class="portfolio-category">웹디자인</span>
+                        <div class="portfolio-preview">
+                            <div class="preview-mockup">
+                                <div class="mockup-header"></div>
+                                <div class="mockup-content">
+                                    <div class="mockup-line"></div>
+                                    <div class="mockup-line short"></div>
+                                    <div class="mockup-boxes">
+                                        <div class="mockup-box"></div>
+                                        <div class="mockup-box"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                     <h4>이커머스 B사 리뉴얼</h4>
                     <p>전환율 150% 개선</p>
                 </div>
                 <div class="portfolio-item">
-                    <div class="portfolio-image" style="background: #7c3aed;">
+                    <div class="portfolio-image" style="background: linear-gradient(135deg, #7c3aed 0%, #a855f7 100%);">
                         <span class="portfolio-category">앱 UI/UX</span>
+                        <div class="portfolio-preview">
+                            <div class="preview-phone">
+                                <div class="phone-screen">
+                                    <div class="app-header"></div>
+                                    <div class="app-card"></div>
+                                    <div class="app-card small"></div>
+                                    <div class="app-nav">
+                                        <span></span><span></span><span></span><span></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                     <h4>핀테크 C사 앱 디자인</h4>
                     <p>앱스토어 피처드 선정</p>
@@ -637,5 +685,14 @@
 
     <script src="canvas.js"></script>
     <script src="script.js"></script>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-analytics-compat.js"></script>
+    <script src="js/firebase-config.js"></script>
+    <script src="js/db.js"></script>
+    <script src="js/auth.js"></script>
 </body>
 </html>

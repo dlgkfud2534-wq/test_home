@@ -764,6 +764,16 @@ h1, h2, h3, h4 {
 
 .portfolio-item {
     text-align: left;
+    transition: var(--transition);
+    cursor: pointer;
+}
+
+.portfolio-item:hover {
+    transform: translateY(-8px);
+}
+
+.portfolio-item:hover .portfolio-image {
+    box-shadow: 0 20px 40px rgba(99, 102, 241, 0.3);
 }
 
 .portfolio-image {
@@ -772,6 +782,9 @@ h1, h2, h3, h4 {
     border-radius: var(--radius-lg);
     margin-bottom: 20px;
     overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .portfolio-category {
@@ -779,10 +792,12 @@ h1, h2, h3, h4 {
     top: 16px;
     left: 16px;
     background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(10px);
     padding: 6px 14px;
     border-radius: var(--radius-full);
     font-size: 12px;
     font-weight: 600;
+    z-index: 10;
 }
 
 .portfolio-item h4 {
@@ -793,6 +808,173 @@ h1, h2, h3, h4 {
 .portfolio-item p {
     color: var(--text-secondary);
     font-size: 14px;
+}
+
+/* Portfolio Preview Content */
+.portfolio-preview {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Branding Preview */
+.preview-logo {
+    width: 80px;
+    height: 80px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 40px;
+    font-weight: 900;
+    color: white;
+    margin-bottom: 16px;
+    backdrop-filter: blur(10px);
+}
+
+.preview-text {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+}
+
+.preview-text span {
+    background: rgba(255, 255, 255, 0.15);
+    padding: 4px 16px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    color: rgba(255, 255, 255, 0.9);
+}
+
+/* Web Mockup Preview */
+.preview-mockup {
+    width: 160px;
+    height: 120px;
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+}
+
+.mockup-header {
+    height: 20px;
+    background: #f1f5f9;
+    display: flex;
+    align-items: center;
+    padding: 0 8px;
+    gap: 4px;
+    position: relative;
+}
+
+.mockup-header::before {
+    content: '';
+    width: 6px;
+    height: 6px;
+    background: #ef4444;
+    border-radius: 50%;
+    box-shadow: 10px 0 0 #f59e0b, 20px 0 0 #22c55e;
+}
+
+.mockup-header::after {
+    content: '';
+    width: 50%;
+    height: 8px;
+    background: #e2e8f0;
+    border-radius: 4px;
+    margin-left: auto;
+}
+
+.mockup-content {
+    padding: 12px;
+}
+
+.mockup-line {
+    height: 8px;
+    background: linear-gradient(90deg, #6366f1, #8b5cf6);
+    border-radius: 4px;
+    margin-bottom: 8px;
+}
+
+.mockup-line.short {
+    width: 60%;
+    background: #e2e8f0;
+}
+
+.mockup-boxes {
+    display: flex;
+    gap: 8px;
+    margin-top: 12px;
+}
+
+.mockup-box {
+    flex: 1;
+    height: 40px;
+    background: linear-gradient(135deg, #f1f5f9, #e2e8f0);
+    border-radius: 4px;
+}
+
+/* App Phone Preview */
+.preview-phone {
+    width: 100px;
+    height: 180px;
+    background: #1a1a2e;
+    border-radius: 20px;
+    padding: 8px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
+}
+
+.phone-screen {
+    width: 100%;
+    height: 100%;
+    background: #0f0f1a;
+    border-radius: 14px;
+    padding: 8px;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.app-header {
+    height: 12px;
+    background: linear-gradient(90deg, #7c3aed, #a855f7);
+    border-radius: 4px;
+    margin-bottom: 8px;
+}
+
+.app-card {
+    flex: 1;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 6px;
+    margin-bottom: 6px;
+}
+
+.app-card.small {
+    flex: 0.5;
+}
+
+.app-nav {
+    display: flex;
+    justify-content: space-around;
+    padding: 6px 0;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 8px;
+    margin-top: auto;
+}
+
+.app-nav span {
+    width: 12px;
+    height: 12px;
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+}
+
+.app-nav span:first-child {
+    background: #a855f7;
 }
 
 /* ===== Process Section ===== */

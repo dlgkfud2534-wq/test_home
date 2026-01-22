@@ -1,0 +1,691 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>회원가입 | STUDIO X</title>
+    <meta name="description" content="STUDIO X 회원가입 - 디자인 서비스의 멤버가 되세요">
+    <meta name="theme-color" content="#0a0a0f">
+    <link rel="icon" href="favicon.ico">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/common.css">
+    <style>
+        /* 회원가입 페이지 전용 스타일 */
+        .auth-page {
+            min-height: 100vh;
+            display: flex;
+            background: var(--bg-primary);
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* 배경 효과 */
+        .auth-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            pointer-events: none;
+        }
+
+        .auth-bg::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle at 70% 30%, rgba(139, 92, 246, 0.15) 0%, transparent 50%),
+                        radial-gradient(circle at 30% 70%, rgba(99, 102, 241, 0.1) 0%, transparent 50%);
+            animation: bgMove 20s ease-in-out infinite;
+        }
+
+        @keyframes bgMove {
+            0%, 100% { transform: translate(0, 0); }
+            50% { transform: translate(-5%, -5%); }
+        }
+
+        /* 그리드 패턴 */
+        .auth-bg::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image:
+                linear-gradient(rgba(139, 92, 246, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(139, 92, 246, 0.03) 1px, transparent 1px);
+            background-size: 50px 50px;
+        }
+
+        /* 메인 컨테이너 */
+        .auth-main {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 24px;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* 카드 스타일 개선 */
+        .auth-card {
+            width: 100%;
+            max-width: 480px;
+            background: rgba(22, 22, 31, 0.8);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 24px;
+            padding: 48px 40px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            animation: cardIn 0.6s ease-out;
+        }
+
+        @keyframes cardIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* 로고 섹션 */
+        .auth-logo {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+
+        .auth-logo a {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+        }
+
+        .auth-logo .logo-icon {
+            font-size: 32px;
+            color: var(--accent-secondary);
+        }
+
+        .auth-logo .logo-text {
+            font-size: 28px;
+            font-weight: 900;
+            color: var(--text-primary);
+        }
+
+        .auth-logo .logo-text .accent {
+            color: var(--accent-secondary);
+        }
+
+        /* 헤더 */
+        .auth-header {
+            text-align: center;
+            margin-bottom: 36px;
+        }
+
+        .auth-header h1 {
+            font-size: 32px;
+            font-weight: 800;
+            margin-bottom: 12px;
+            background: linear-gradient(135deg, #fff 0%, #a0a0b0 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .auth-header p {
+            color: var(--text-secondary);
+            font-size: 16px;
+        }
+
+        /* 폼 그룹 */
+        .form-group {
+            margin-bottom: 22px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 10px;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-secondary);
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 16px 18px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            color: var(--text-primary);
+            font-size: 15px;
+            transition: all 0.3s ease;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--accent-secondary);
+            background: rgba(139, 92, 246, 0.05);
+            box-shadow: 0 0 0 4px rgba(139, 92, 246, 0.1);
+        }
+
+        .form-group input::placeholder {
+            color: var(--text-muted);
+        }
+
+        /* 힌트 텍스트 */
+        .form-hint {
+            display: block;
+            margin-top: 8px;
+            font-size: 13px;
+            color: var(--text-muted);
+            transition: all 0.3s ease;
+        }
+
+        /* 체크박스 그룹 */
+        .checkbox-group {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            padding: 14px 16px;
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transition: all 0.3s ease;
+        }
+
+        .checkbox-group:hover {
+            background: rgba(255, 255, 255, 0.04);
+        }
+
+        .checkbox-group input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            margin-top: 2px;
+            accent-color: var(--accent-secondary);
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+
+        .checkbox-group label {
+            margin-bottom: 0;
+            font-size: 14px;
+            color: var(--text-secondary);
+            line-height: 1.6;
+            cursor: pointer;
+        }
+
+        .checkbox-group a {
+            color: var(--accent-primary);
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .checkbox-group a:hover {
+            text-decoration: underline;
+        }
+
+        /* 버튼 스타일 */
+        .btn.primary {
+            width: 100%;
+            padding: 16px 28px;
+            background: linear-gradient(135deg, var(--accent-secondary) 0%, var(--accent-primary) 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn.primary::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .btn.primary:hover::before {
+            left: 100%;
+        }
+
+        .btn.primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 40px rgba(139, 92, 246, 0.4);
+        }
+
+        .btn.primary:active {
+            transform: translateY(0);
+        }
+
+        /* 디바이더 */
+        .auth-divider {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin: 28px 0;
+            color: var(--text-muted);
+            font-size: 13px;
+        }
+
+        .auth-divider::before,
+        .auth-divider::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+        }
+
+        /* 소셜 버튼 */
+        .social-btn {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            padding: 16px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            color: var(--text-primary);
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .social-btn:hover {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+
+        /* 푸터 */
+        .auth-footer {
+            text-align: center;
+            margin-top: 28px;
+            padding-top: 24px;
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
+            color: var(--text-secondary);
+            font-size: 15px;
+        }
+
+        .auth-footer a {
+            color: var(--accent-secondary);
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .auth-footer a:hover {
+            color: var(--accent-primary);
+            text-decoration: underline;
+        }
+
+        /* 메시지 스타일 */
+        .error-message {
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            color: #f87171;
+            padding: 14px 18px;
+            border-radius: 12px;
+            font-size: 14px;
+            margin-top: 20px;
+            display: none;
+            animation: shake 0.5s ease;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            20%, 60% { transform: translateX(-5px); }
+            40%, 80% { transform: translateX(5px); }
+        }
+
+        .error-message.show {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .error-message::before {
+            content: '⚠';
+        }
+
+        .success-message {
+            background: rgba(34, 197, 94, 0.1);
+            border: 1px solid rgba(34, 197, 94, 0.3);
+            color: #4ade80;
+            padding: 14px 18px;
+            border-radius: 12px;
+            font-size: 14px;
+            margin-top: 20px;
+            display: none;
+        }
+
+        .success-message.show {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .success-message::before {
+            content: '✓';
+        }
+
+        /* 홈 링크 */
+        .home-link {
+            position: fixed;
+            top: 24px;
+            left: 24px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--text-secondary);
+            font-size: 14px;
+            font-weight: 500;
+            text-decoration: none;
+            padding: 10px 16px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 50px;
+            transition: all 0.3s ease;
+            z-index: 100;
+        }
+
+        .home-link:hover {
+            background: rgba(255, 255, 255, 0.08);
+            color: var(--text-primary);
+        }
+
+        /* 프로그레스 인디케이터 */
+        .progress-steps {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin-bottom: 32px;
+        }
+
+        .progress-step {
+            width: 40px;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 2px;
+            transition: all 0.3s ease;
+        }
+
+        .progress-step.active {
+            background: var(--accent-secondary);
+        }
+
+        /* 반응형 */
+        @media (max-width: 480px) {
+            .auth-card {
+                padding: 36px 24px;
+                border-radius: 20px;
+            }
+
+            .auth-header h1 {
+                font-size: 26px;
+            }
+
+            .home-link {
+                top: 16px;
+                left: 16px;
+                padding: 8px 14px;
+                font-size: 13px;
+            }
+
+            .checkbox-group {
+                padding: 12px;
+            }
+
+            .checkbox-group label {
+                font-size: 13px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 배경 효과 -->
+    <div class="auth-bg"></div>
+
+    <!-- 홈 링크 -->
+    <a href="index.html" class="home-link">
+        <span>←</span> 홈으로
+    </a>
+
+    <!-- 회원가입 페이지 -->
+    <main class="auth-page">
+        <div class="auth-main">
+            <div class="auth-card">
+                <!-- 로고 -->
+                <div class="auth-logo">
+                    <a href="index.html">
+                        <span class="logo-icon">◆</span>
+                        <span class="logo-text">STUDIO<span class="accent">X</span></span>
+                    </a>
+                </div>
+
+                <!-- 프로그레스 -->
+                <div class="progress-steps">
+                    <div class="progress-step active"></div>
+                    <div class="progress-step"></div>
+                    <div class="progress-step"></div>
+                </div>
+
+                <!-- 헤더 -->
+                <div class="auth-header">
+                    <h1>회원가입</h1>
+                    <p>STUDIO X의 멤버가 되어보세요</p>
+                </div>
+
+                <!-- 회원가입 폼 -->
+                <form id="signupForm" class="auth-form" onsubmit="handleSignup(event)">
+                    <div class="form-group">
+                        <label for="name">이름</label>
+                        <input type="text" id="name" required placeholder="홍길동" autocomplete="name" oninput="updateProgress()">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="email">이메일</label>
+                        <input type="email" id="email" required placeholder="example@email.com" autocomplete="email" oninput="updateProgress()">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="password">비밀번호</label>
+                        <input type="password" id="password" required placeholder="8자 이상" autocomplete="new-password" oninput="checkPasswordStrength(); updateProgress();">
+                        <span class="form-hint" id="passwordHint">영문, 숫자 포함 8자 이상</span>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="passwordConfirm">비밀번호 확인</label>
+                        <input type="password" id="passwordConfirm" required placeholder="비밀번호 재입력" autocomplete="new-password" oninput="updateProgress()">
+                    </div>
+
+                    <div class="form-group">
+                        <div class="checkbox-group">
+                            <input type="checkbox" id="terms" required>
+                            <label for="terms">
+                                <a href="#" target="_blank">이용약관</a> 및 <a href="#" target="_blank">개인정보처리방침</a>에 동의합니다 <span style="color: var(--accent-primary);">(필수)</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="checkbox-group">
+                            <input type="checkbox" id="marketing">
+                            <label for="marketing">마케팅 정보 수신에 동의합니다 <span style="color: var(--text-muted);">(선택)</span></label>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn primary">회원가입</button>
+
+                    <div class="error-message" id="errorMessage"></div>
+                    <div class="success-message" id="successMessage"></div>
+                </form>
+
+                <!-- 소셜 가입 -->
+                <div class="auth-divider">또는</div>
+
+                <button class="social-btn google" onclick="handleGoogleSignup()">
+                    <svg width="20" height="20" viewBox="0 0 24 24">
+                        <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                        <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                        <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
+                        <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+                    </svg>
+                    Google로 가입하기
+                </button>
+
+                <!-- 푸터 -->
+                <div class="auth-footer">
+                    <p>이미 계정이 있으신가요? <a href="login.html">로그인</a></p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-analytics-compat.js"></script>
+    <script src="js/firebase-config.js"></script>
+    <script src="js/db.js"></script>
+    <script src="js/auth.js"></script>
+
+    <script>
+        // 프로그레스 업데이트
+        function updateProgress() {
+            const name = document.getElementById('name').value;
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const passwordConfirm = document.getElementById('passwordConfirm').value;
+
+            const steps = document.querySelectorAll('.progress-step');
+
+            // Step 1: 이름과 이메일
+            if (name && email) {
+                steps[0].classList.add('active');
+            } else {
+                steps[0].classList.remove('active');
+            }
+
+            // Step 2: 비밀번호
+            if (password && password.length >= 8) {
+                steps[1].classList.add('active');
+            } else {
+                steps[1].classList.remove('active');
+            }
+
+            // Step 3: 비밀번호 확인
+            if (passwordConfirm && password === passwordConfirm) {
+                steps[2].classList.add('active');
+            } else {
+                steps[2].classList.remove('active');
+            }
+        }
+
+        // 회원가입 폼 처리
+        async function handleSignup(event) {
+            event.preventDefault();
+
+            const name = document.getElementById('name').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const password = document.getElementById('password').value;
+            const passwordConfirm = document.getElementById('passwordConfirm').value;
+            const terms = document.getElementById('terms').checked;
+            const marketing = document.getElementById('marketing').checked;
+
+            // 유효성 검사
+            if (!name) {
+                showError('이름을 입력해주세요.');
+                return;
+            }
+
+            if (!validateEmail(email)) {
+                showError('유효한 이메일 주소를 입력해주세요.');
+                return;
+            }
+
+            const passwordValidation = validatePassword(password);
+            if (!passwordValidation.valid) {
+                showError(passwordValidation.message);
+                return;
+            }
+
+            if (password !== passwordConfirm) {
+                showError('비밀번호가 일치하지 않습니다.');
+                return;
+            }
+
+            if (!terms) {
+                showError('이용약관에 동의해주세요.');
+                return;
+            }
+
+            // 회원가입 처리
+            const result = await signupWithEmail(name, email, password);
+
+            if (result.success) {
+                // 마케팅 동의 저장
+                if (typeof db !== 'undefined') {
+                    await db.collection('users').doc(result.user.uid).update({
+                        marketingAgreed: marketing
+                    });
+                }
+
+                showSuccess('회원가입이 완료되었습니다! 잠시 후 메인 페이지로 이동합니다.');
+                setTimeout(() => {
+                    window.location.href = 'index.html';
+                }, 2000);
+            } else {
+                showError(result.error);
+            }
+        }
+
+        // Google 회원가입
+        async function handleGoogleSignup() {
+            const result = await loginWithGoogle();
+
+            if (result.success) {
+                window.location.href = 'index.html';
+            } else {
+                showError(result.error);
+            }
+        }
+
+        // 비밀번호 강도 체크
+        function checkPasswordStrength() {
+            const password = document.getElementById('password').value;
+            const hint = document.getElementById('passwordHint');
+
+            if (password.length === 0) {
+                hint.textContent = '영문, 숫자 포함 8자 이상';
+                hint.style.color = 'var(--text-muted)';
+            } else if (password.length < 8) {
+                hint.textContent = '비밀번호가 너무 짧습니다';
+                hint.style.color = 'var(--error)';
+            } else if (!/[A-Za-z]/.test(password) || !/[0-9]/.test(password)) {
+                hint.textContent = '영문과 숫자를 모두 포함해주세요';
+                hint.style.color = 'var(--warning)';
+            } else {
+                hint.textContent = '✓ 사용 가능한 비밀번호입니다';
+                hint.style.color = 'var(--success)';
+            }
+        }
+    </script>
+</body>
+</html>
