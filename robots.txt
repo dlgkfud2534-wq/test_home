@@ -1,0 +1,22 @@
+# robots.txt for HA RYEONG / STUDIO X
+# https://test4-self-nine.vercel.app
+
+User-agent: *
+Allow: /
+
+# Sitemap location
+Sitemap: https://test4-self-nine.vercel.app/sitemap.xml
+
+# Crawl-delay (optional, for polite crawling)
+Crawl-delay: 1
+
+# Disallow admin or private paths (if any)
+Disallow: /admin/
+Disallow: /private/
+Disallow: /*.json$
+
+# Allow important assets
+Allow: /styles.css
+Allow: /script.js
+Allow: /canvas.js
+Allow: /og-image.png
